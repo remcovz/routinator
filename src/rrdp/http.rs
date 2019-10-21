@@ -54,6 +54,7 @@ impl HttpClient {
         if let Some(addr) = config.rrdp_local_addr {
             builder = builder.local_address(addr)
         }
+        #[cfg(feature = "tls")]
         for path in &config.rrdp_root_certs {
             builder = builder.add_root_certificate(
                 Self::load_cert(path)?
@@ -86,6 +87,7 @@ impl HttpClient {
         })
     }
 
+    #[cfg(feature = "tls")]
     fn load_cert(path: &Path) -> Result<reqwest::Certificate, Error> {
         let mut file = match fs::File::open(path) {
             Ok(file) => file,
